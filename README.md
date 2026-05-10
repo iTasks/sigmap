@@ -231,6 +231,20 @@ If SigMap saves you context or API spend, a ⭐ on [GitHub](https://github.com/m
 
 ---
 
+## Contributing
+
+SigMap welcomes contributions! 
+
+**Before submitting a PR:**
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+2. Check [Discussions → Announcements](../../discussions) for workflow setup
+3. Target the `develop` branch (not main)
+4. Follow the [contributor checklist](.github/CONTRIBUTOR_CHECKLIST.txt)
+
+See [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) for the PR checklist. All contributors are credited in the CHANGELOG and release notes.
+
+---
+
 ## Why not embeddings?
 
 | | Embeddings | SigMap |
