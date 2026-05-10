@@ -6,6 +6,7 @@ on:
     paths:
       - "package.json"
       - "CHANGELOG.md"
+  workflow_dispatch:
 
 jobs:
   draft-release:
