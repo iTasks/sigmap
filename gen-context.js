@@ -4459,7 +4459,7 @@ __factories["./src/map/class-hierarchy"] = function(module, exports) {
       .join('\n');
   }
   
-  module.exports = { analyze };
+  module.exports = { analyze, extractImports };
   
 };
 
