@@ -10,6 +10,14 @@ Format: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [6.10.4] — 2026-05-11
+
+### Fixed
+
+- **Bundled MCP tools extractImports export** — Fixed `extractImports` function not being exported from the import-graph factory in bundled gen-context.js, which caused `explain_file` (imports/callers) and `get_impact` MCP tools to fail with "extractImports is not a function" when running via `--mcp` server. Added comprehensive tests to prevent regression.
+
+---
+
 ## [6.10.3] — 2026-05-11
 
 ### Fixed
