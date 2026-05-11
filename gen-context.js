@@ -4610,9 +4610,9 @@ __factories["./src/map/import-graph"] = function(module, exports) {
   
     return lines.join('\n');
   }
-  
-  module.exports = { analyze };
-  
+
+  module.exports = { analyze, extractImports };
+
 };
 
 // ── ./src/map/route-table ──

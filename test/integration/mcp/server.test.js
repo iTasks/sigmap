@@ -324,6 +324,67 @@ test('create_checkpoint reports missing context when no file', () => {
   });
 });
 
+// ─────────────────────────────────────────────────────────────
+// explain_file (imports/callers) and get_impact — extractImports export test
+// ─────────────────────────────────────────────────────────────
+
+function seedProjectWithImports(dir) {
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+
+  fs.writeFileSync(path.join(dir, 'src', 'utils.js'), 'function log(msg) { console.log(msg); }');
+  fs.writeFileSync(path.join(dir, 'src', 'config.js'), 'module.exports = { debug: true };');
+  fs.writeFileSync(
+    path.join(dir, 'src', 'app.js'),
+    "const utils = require('./utils');\nconst config = require('./config');\nfunction start() { utils.log('started'); }"
+  );
+  fs.writeFileSync(path.join(dir, 'src', 'main.js'), "const app = require('./app');\napp.start();");
+
+  // Generate context
+  execSync(`node "${GEN_CONTEXT}"`, { cwd: dir, stdio: 'pipe' });
+}
+
+test('explain_file with imports parameter works without extractImports error', () => {
+  withTempProject((dir) => {
+    seedProjectWithImports(dir);
+    const [res] = mcpCall(
+      { jsonrpc: '2.0', method: 'tools/call', id: 30, params: { name: 'explain_file', arguments: { path: 'src/app.js' } } },
+      dir
+    );
+    assert.ok(res.result, 'Should have result');
+    const text = res.result.content[0].text;
+    assert.ok(!text.includes('extractImports is not a function'), 'Should NOT have extractImports error');
+    assert.ok(text.includes('## Imports'), 'Should include Imports section');
+  });
+});
+
+test('explain_file with callers parameter works without extractImports error', () => {
+  withTempProject((dir) => {
+    seedProjectWithImports(dir);
+    const [res] = mcpCall(
+      { jsonrpc: '2.0', method: 'tools/call', id: 31, params: { name: 'explain_file', arguments: { path: 'src/utils.js' } } },
+      dir
+    );
+    assert.ok(res.result, 'Should have result');
+    const text = res.result.content[0].text;
+    assert.ok(!text.includes('extractImports is not a function'), 'Should NOT have extractImports error');
+    assert.ok(text.includes('## Callers'), 'Should include Callers section');
+  });
+});
+
+test('get_impact tool works without extractImports error', () => {
+  withTempProject((dir) => {
+    seedProjectWithImports(dir);
+    const [res] = mcpCall(
+      { jsonrpc: '2.0', method: 'tools/call', id: 32, params: { name: 'get_impact', arguments: { file: 'src/utils.js' } } },
+      dir
+    );
+    assert.ok(res.result, 'Should have result');
+    const text = res.result.content[0].text;
+    assert.ok(!text.includes('extractImports is not a function'), 'Should NOT have extractImports error');
+    assert.ok(text.includes('## Impact'), 'Should include Impact section');
+  });
+});
+
 console.log('');
 console.log(`mcp-server: ${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);
