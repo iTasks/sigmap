@@ -10,6 +10,19 @@ Format: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [6.10.3] — 2026-05-11
+
+### Fixed
+
+- **MCP tools import graph analysis** — Fixed `extractImports` not being exported in bundled gen-context.js, which caused `explain_file` (imports/callers), `get_impact`, and `get_routing` tools to fail with "extractImports is not a function" error. Now all three tools correctly analyze file dependencies and impact blast radius.
+- **Contributor attribution** — Added direct author commits for Denis Solonenko (GDScript extractor), Sean Campbell (Willow adapter, Python AST extractor), kumamaki (Claude adapter per-module), and Matt Van Horn (R language support) so they appear in GitHub contributors graph.
+
+### Changed
+
+- **Auto-sync workflow** — Added GitHub Actions workflow to automatically sync `develop` branch with `main` after each release, preventing future branch drift.
+
+---
+
 ## [6.10.2] — 2026-05-11
 
 ### Added
