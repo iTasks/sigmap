@@ -61,12 +61,12 @@ Always run `sigmap ask` or `sigmap --query` before searching for files relevant 
 src/extractors/python_ast.py ← ast
 ```
 
-## changes (last 5 commits — 0 seconds ago)
+## changes (last 5 commits — 1 second ago)
 ```
-src/discovery/language-detector.js            ~detectLanguages
-src/extractors/python.js                      +tryNativeExtract  +extract  ~extract  ~extractDocHint
-src/extractors/python_ast.py                  +annotation_to_str  +format_args  +arguments  +get_decorator_names
-src/extractors/r.js                           +extract  +definitions  +readBalancedParens  +normalizeParams
+src/discovery/source-root-resolver.js         ~_applySpecialRules  ~_dedupeNested
+src/map/import-graph.js                       ~analyze
+packages/adapters/index.js                    ~getAdapter
+packages/adapters/willow.js                   +format  +outputPath  +generateAtomId  +fetchWithTimeout
 ```
 
 ## packages
@@ -75,15 +75,6 @@ src/extractors/r.js                           +extract  +definitions  +readBalan
 ```
 module.exports = { CLI_ENTRY, run }
 function run(argv, cwd) → void
-```
-
-### packages/adapters/index.js
-```
-module.exports = { getAdapter, listAdapters, adapt, outputsToAdapters }
-function getAdapter(name) → { name: string, format: F
-function listAdapters() → string[]
-function adapt(context, adapterName, opts = {}) → string
-function outputsToAdapters(outputs) → string[]
 ```
 
 ### packages/adapters/llm-full.js
@@ -173,6 +164,26 @@ function outputPath(cwd) → string
 function write(context, cwd, opts = {})
 ```
 
+### packages/adapters/index.js
+```
+module.exports = { getAdapter, listAdapters, adapt, outputsToAdapters }
+function getAdapter(name) → { name: string, format: F
+function listAdapters() → string[]
+function adapt(context, adapterName, opts = {}) → string
+function outputsToAdapters(outputs) → string[]
+```
+
+### packages/adapters/willow.js
+```
+module.exports = { name, format, outputPath, write }
+function format(context, opts = {}) → string
+function outputPath(cwd) → string
+function generateAtomId(filepath) → string
+async function fetchWithTimeout(url, opts, timeoutMs) → Promise<Response>
+async function postAtomWithRetry(atom, mcpUrl, timeoutMs, maxRetries) → Promise<boolean>
+async function write(context, cwd, opts = {}) → Promise<void>
+```
+
 ### packages/core/index.js
 ```
 module.exports = { extract, rank, buildSigIndex, scan, score, adapt }
@@ -186,20 +197,6 @@ function adapt(context, adapterName, opts = {}) → string
 ```
 
 ## src
-
-### src/eval/runner.js
-```
-module.exports = { run, rank, loadTasks, buildSigIndex, formatTable, formatMetrics, tokenize }
-function buildSigIndex(cwd) → Map<string, string[]>
-function tokenize(text) → string[]
-function scoreFile(sigs, queryTokens) → number
-function rank(query, index, topK = 10) → { file: string, score: nu
-function estimateTokens(sigs) → number
-function loadTasks(tasksFile) → Array<{id:string, query:s
-function run(tasksFile, cwd, opts = {}) → { * tasks: Array<{id, que
-function formatTable(taskResults) → string
-function formatMetrics(metrics) → string
-```
 
 ### src/retrieval/tokenizer.js
 ```
@@ -569,16 +566,16 @@ function _dedupeNested(scored)
 function _computeConfidence(frameworks, languages, scoredCount)
 ```
 
-### src/discovery/source-root-registry.js
-```
-module.exports = { REGISTRY }
-```
-
 ### src/discovery/language-detector.js
 ```
 module.exports = { detectLanguages }
 function detectLanguages(cwd)
 function _walkDepth(dir, depth, extCount)
+```
+
+### src/discovery/source-root-registry.js
+```
+module.exports = { REGISTRY }
 ```
 
 ### src/eval/analyzer.js
@@ -633,6 +630,15 @@ module.exports = { extract }
 function extract(src) → string[]
 function readBalancedParens(src, openIdx, cap = 4096)
 function normalizeParams(raw)
+```
+
+### src/map/import-graph.js
+```
+module.exports = { analyze, extractImports }
+function extractImports(filePath, content, fileSet)
+function resolveJsPath(dir, importStr, fileSet)
+function detectCycles(graph)
+function analyze(files, cwd)
 ```
 
 ### src/mcp/server.js
