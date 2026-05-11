@@ -41,7 +41,7 @@ function extractImports(filePath, content, fileSet) {
   }
 
   if (PY_EXTS.has(ext)) {
-    // from .module import ...  /  from ..pkg import ...
+    // from .module import ...  /  from ..pkg import ... (relative imports)
     const re = /^[ \t]*from\s+(\.+[\w.]*)\s+import/gm;
     let m;
     while ((m = re.exec(content)) !== null) {
@@ -62,12 +62,17 @@ function resolveJsPath(dir, importStr, fileSet) {
   const candidates = [
     base,
     base + '.ts', base + '.tsx',
-    base + '.js', base + '.jsx',
-    base + '/index.ts', base + '/index.js',
+    base + '.js', base + '.jsx', base + '.mjs', base + '.cjs',
+    base + '/index.ts', base + '/index.tsx',
+    base + '/index.js', base + '/index.jsx', base + '/index.mjs',
   ];
   for (const c of candidates) {
     if (fileSet.has(c)) return c;
   }
+
+  // Fallback: check if base itself is already a valid file (handles .ts/.js already in path)
+  if (fileSet.has(base)) return base;
+
   return null;
 }
 
@@ -100,6 +105,20 @@ function detectCycles(graph) {
     if (!visited.has(node)) dfs(node);
   }
   return cycles;
+}
+
+// ---------------------------------------------------------------------------
+// Build reverse graph (for caller detection)
+// ---------------------------------------------------------------------------
+function buildReverseGraph(graph) {
+  const reverse = new Map();
+  for (const [file, deps] of graph.entries()) {
+    for (const dep of deps) {
+      if (!reverse.has(dep)) reverse.set(dep, []);
+      reverse.get(dep).push(file);
+    }
+  }
+  return reverse;
 }
 
 // ---------------------------------------------------------------------------
@@ -145,4 +164,4 @@ function analyze(files, cwd) {
   return lines.join('\n');
 }
 
-module.exports = { analyze, extractImports };
+module.exports = { analyze, extractImports, buildReverseGraph, resolveJsPath, detectCycles };
