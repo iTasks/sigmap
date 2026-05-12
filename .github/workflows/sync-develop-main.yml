@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   sync:
@@ -28,5 +29,9 @@ jobs:
           git fetch origin main develop
           git checkout develop
           git merge --no-edit origin/main
-          git push origin develop --force-with-lease
+          if git diff --exit-code origin/develop HEAD > /dev/null; then
+            echo "develop is already up to date"
+          else
+            git push origin develop
+          fi
         continue-on-error: true
