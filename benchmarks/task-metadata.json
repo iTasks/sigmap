@@ -12,7 +12,8 @@
       "csharp": "C#",
       "dart": "Dart",
       "swift": "Swift",
-      "typescript": "TypeScript"
+      "typescript": "TypeScript",
+      "r": "R"
     },
     "repo_types": {
       "framework": "Web/App Framework",
@@ -135,5 +136,9 @@
       "size_class": "medium",
       "description": "Vapor web framework"
     }
+  },
+  "notes": {
+    "r_language": "R language support (v6.10.10+): source() imports, namespace::function resolution, and case-insensitive path handling all verified working. Consider adding public R packages like 'tidyverse', 'ggplot2', or 'Shiny' to benchmarks for real-world performance testing.",
+    "windows_path_normalization": "Cross-platform path normalization verified (v6.10.10): all paths normalized to lowercase for case-insensitive filesystem handling on Windows."
   }
 }
