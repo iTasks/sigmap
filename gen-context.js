@@ -5034,7 +5034,8 @@ __factories["./src/graph/builder"] = function(module, exports) {
     }
     return null;
   }
-  function extractFileDeps(filePath, content, fileSet, cwd) {
+  function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function extractFileDeps(filePath, content, fileSet, cwd, ctx) {
     const ext = path.extname(filePath).toLowerCase();
     const dir = path.dirname(filePath);
     const found = [];
@@ -5097,22 +5098,58 @@ __factories["./src/graph/builder"] = function(module, exports) {
       while ((m = reSrc.exec(stripped)) !== null) {
         const r = resolveRPath(dir, m[1], fileSet, cwd); if (r) found.push(r);
       }
+      if (ctx && ctx.rPackage && ctx.rLocalDefs && ctx.rLocalDefs.size > 0) {
+        const reNs = new RegExp('\\b' + escapeRegex(ctx.rPackage) + ':::?([A-Za-z][\\w.]*)', 'g');
+        while ((m = reNs.exec(stripped)) !== null) {
+          const target = ctx.rLocalDefs.get(m[1]);
+          if (target && target !== filePath && fileSet.has(target)) found.push(target);
+        }
+      }
     }
     return [...new Set(found)];
   }
-  function build(files, cwd) {
+  function build(files, cwd, ctx) {
     const fileSet = new Set(files.map((f) => path.resolve(f)));
     const forward = new Map(); const reverse = new Map();
     for (const f of fileSet) { if (!forward.has(f)) forward.set(f,[]); if (!reverse.has(f)) reverse.set(f,[]); }
     for (const filePath of fileSet) {
       let content; try { content = fs.readFileSync(filePath,'utf8'); } catch(_) { continue; }
-      const deps = extractFileDeps(filePath, content, fileSet, cwd);
+      const deps = extractFileDeps(filePath, content, fileSet, cwd, ctx);
       if (deps.length > 0) {
         forward.set(filePath, deps);
         for (const dep of deps) { if (!reverse.has(dep)) reverse.set(dep,[]); reverse.get(dep).push(filePath); }
       }
     }
     return { forward, reverse };
+  }
+  function _readDescriptionPackage(cwd) {
+    try {
+      const raw = fs.readFileSync(path.join(cwd, 'DESCRIPTION'), 'utf8');
+      const m = raw.match(/^Package\s*:\s*(\S+)/m);
+      return m ? m[1] : null;
+    } catch (_) { return null; }
+  }
+  function _collectRLocalDefs(rFiles) {
+    const defs = new Map();
+    const reAssign = /^(?:[ \t]*)([\w.]+)\s*(?:<<-|<-|=)\s*(?:(?:R6::)?R6Class|(?:S7::)?new_class|function)\b/gm;
+    const reS4Generic = /^[ \t]*setGeneric\s*\(\s*["']([\w.]+)["']/gm;
+    const reS4Class   = /^[ \t]*setClass\s*\(\s*["']([\w.]+)["']/gm;
+    for (const filePath of rFiles) {
+      let content; try { content = fs.readFileSync(filePath, 'utf8'); } catch (_) { continue; }
+      const stripped = content.replace(/#.*$/gm, '');
+      let m;
+      while ((m = reAssign.exec(stripped)) !== null) {
+        if (m[1].startsWith('.')) continue;
+        if (!defs.has(m[1])) defs.set(m[1], filePath);
+      }
+      while ((m = reS4Generic.exec(stripped)) !== null) {
+        if (!defs.has(m[1])) defs.set(m[1], filePath);
+      }
+      while ((m = reS4Class.exec(stripped)) !== null) {
+        if (!defs.has(m[1])) defs.set(m[1], filePath);
+      }
+    }
+    return defs;
   }
   function buildFromCwd(cwd, opts) {
     const { srcDirs=['src','app','lib','R','inst'], exclude=['node_modules','.git','dist','build'] } = opts||{};
@@ -5137,7 +5174,13 @@ __factories["./src/graph/builder"] = function(module, exports) {
     for (const rootFile of ['gen-context.js','index.js','main.js','app.js','app.R','server.R','ui.R','global.R']) {
       const abs=path.resolve(cwd,rootFile); if (fs.existsSync(abs)) files.push(abs);
     }
-    return build(files, cwd);
+    let ctx;
+    const rPackage = _readDescriptionPackage(cwd);
+    if (rPackage) {
+      const rFiles = files.filter((f) => R_EXTS.has(path.extname(f).toLowerCase()));
+      if (rFiles.length > 0) ctx = { rPackage, rLocalDefs: _collectRLocalDefs(rFiles) };
+    }
+    return build(files, cwd, ctx);
   }
   module.exports = { build, buildFromCwd, extractFileDeps };
 };
