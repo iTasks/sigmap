@@ -1,13 +1,13 @@
 ---
 title: Retrieval benchmark
-description: Latest saved retrieval benchmark for SigMap v6.10. 80.0% hit@5 vs 13.6% random baseline across 90 tasks on 18 repos.
+description: Latest saved retrieval benchmark for SigMap v6.10.10. 78.9% hit@5 vs 13.6% random baseline across 90 tasks on 18 repos, with R language support.
 head:
   - - meta
     - property: og:title
-      content: "SigMap retrieval benchmark — 80.0% hit@5"
+      content: "SigMap retrieval benchmark — 78.9% hit@5"
   - - meta
     - property: og:description
-      content: "Latest saved run: 80.0% hit@5 vs 13.6% random baseline, 5.9x lift, 90 tasks, 18 repos."
+      content: "Latest saved run: 78.9% hit@5 vs 13.6% random baseline, 5.8x lift, 90 tasks, 18 repos."
   - - meta
     - property: og:url
       content: "https://manojmallick.github.io/sigmap/guide/retrieval-benchmark"
@@ -15,23 +15,23 @@ head:
 
 # Retrieval benchmark
 
-::: info Official v6.10 benchmark snapshot
-**Benchmark ID:** sigmap-v6.10-main &nbsp;·&nbsp; **Date:** 2026-05-05
+::: info Official v6.10.10 benchmark snapshot
+**Benchmark ID:** sigmap-v6.10-main &nbsp;·&nbsp; **Date:** 2026-05-12 (with R language)
 
 | Metric | Value |
 |---|---:|
-| Hit@5 | **80.0%** vs 13.6% baseline |
-| Graph-boosted hit@5 | **80.0%** |
-| Retrieval lift | **5.9×** |
-| Prompt reduction | **41.0%** (2.84 → 1.68) |
+| Hit@5 | **78.9%** vs 13.6% baseline |
+| Graph-boosted hit@5 | **78.9%** |
+| Retrieval lift | **5.8×** |
+| Prompt reduction | **40.6%** (2.84 → 1.66) |
 | Task success proxy | **52.2%** |
-| Overall token reduction | **96.8%** |
-| GPT-4o overflow (without → with) | **13/18 → 0/18** |
+| Overall token reduction | **97.9%** |
+| GPT-4o overflow (without → with) | **16/21 → 0/21** |
 :::
 
-Latest saved run: **2026-05-12 (v6.10.8)**
+Latest saved run: **2026-05-12 (v6.10.10)**
 
-**Result:** SigMap finds the right file in the top 5 far more often than chance — **80.0% hit@5** vs **13.6%** random baseline across 90 tasks on 18 real repos.
+**Result:** SigMap finds the right file in the top 5 far more often than chance — **78.9% hit@5** vs **13.6%** random baseline across 90 tasks on 18 real repos.
 
 ## Why this benchmark matters
 
@@ -47,9 +47,9 @@ This benchmark isolates that first question: *did the right file appear in conte
 
 | Metric | Without SigMap | With SigMap |
 |---|:---:|:---:|
-| Average hit@5 | 13.6% | **80.0%** |
-| Graph-boosted hit@5 | — | **80.0%** |
-| Lift | — | **5.9x** |
+| Average hit@5 | 13.6% | **78.9%** |
+| Graph-boosted hit@5 | — | **78.9%** |
+| Lift | — | **5.8x** |
 | Correct (rank 1) | ~1% | **52.2%** |
 | Partial (ranks 2–5) | ~13% | **26.7%** |
 | Wrong (not in top 5) | ~86% | **21.1%** |

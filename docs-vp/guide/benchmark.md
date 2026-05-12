@@ -68,10 +68,10 @@ Latest saved benchmark run: **2026-05-12 (v6.10.10)**
 
 ### 2. Retrieval quality
 
-- SigMap hit@5: **80.0%**
-- Graph-boosted hit@5: **80.0%** (+0.0pp with dependency graph)
+- SigMap hit@5: **78.9%**
+- Graph-boosted hit@5: **78.9%** (+0.0pp with dependency graph)
 - Random baseline: **13.6%**
-- Lift: **5.9x**
+- Lift: **5.8x**
 
 This is the best benchmark when the question is: *"Does SigMap actually put the right file in context?"*
 
@@ -80,7 +80,7 @@ This is the best benchmark when the question is: *"Does SigMap actually put the 
 - Correct: **47 / 90** (52.2%)
 - Partial: **24 / 90** (26.7%)
 - Wrong: **19 / 90** (21.1%)
-- Average prompts: **2.84 → 1.68**
+- Average prompts: **2.84 → 1.66**
 
 This is the best benchmark when the question is: *"Does the developer need fewer retries to finish the job?"*
 

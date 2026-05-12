@@ -233,7 +233,7 @@ sigmap --health
 | Benchmark methodology | [benchmark.html](https://manojmallick.github.io/sigmap/guide/benchmark.html) |
 | Config reference | [config.html](https://manojmallick.github.io/sigmap/guide/config.html) |
 | Roadmap | [roadmap.html](https://manojmallick.github.io/sigmap/guide/roadmap.html) |
-| 29 languages | [generalization.html](https://manojmallick.github.io/sigmap/guide/generalization.html) |
+| 31 languages | [generalization.html](https://manojmallick.github.io/sigmap/guide/generalization.html) |
 
 ---
 
@@ -278,9 +278,9 @@ See [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) for the
 
 ---
 
-## 29 languages
+## 31 languages
 
-TypeScript · JavaScript · Python · Java · Kotlin · Go · Rust · C# · C/C++ · Ruby · PHP · Swift · Dart · Scala · Vue · Svelte · HTML · CSS/SCSS · YAML · Shell · SQL · GraphQL · Terraform · Protobuf · Dockerfile · TOML · XML · Properties · Markdown
+TypeScript · JavaScript · Python · Java · Kotlin · Go · Rust · C# · C/C++ · Ruby · PHP · Swift · Dart · Scala · Vue · Svelte · HTML · CSS/SCSS · YAML · Shell · SQL · GraphQL · Terraform · Protobuf · Dockerfile · TOML · XML · Properties · Markdown · R · GDScript
 
 All implemented with zero external dependencies.
 

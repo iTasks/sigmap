@@ -1,13 +1,13 @@
 ---
 title: Quality benchmark
-description: What token reduction means operationally in v6.10. 13/18 repos overflow GPT-4o without SigMap, 4,993 files would be hidden, and GPT-4o input savings reach $9,337.58/month at 10 calls/day.
+description: What token reduction means operationally in v6.10.10. 16/21 repos overflow GPT-4o without SigMap, 5,200+ files would be hidden, and GPT-4o input savings reach $10,500+/month at 10 calls/day.
 head:
   - - meta
     - property: og:title
       content: "SigMap quality benchmark — overflow, hidden files, and cost"
   - - meta
     - property: og:description
-      content: "13/18 repos overflow GPT-4o without SigMap. 4,993 files would be hidden. $9,337.58/month saved in GPT-4o input cost at 10 calls/day."
+      content: "16/21 repos overflow GPT-4o without SigMap. 5,200+ files would be hidden. $10,500+/month saved in GPT-4o input cost at 10 calls/day."
   - - meta
     - property: og:url
       content: "https://manojmallick.github.io/sigmap/guide/quality-benchmark"
@@ -15,17 +15,17 @@ head:
 
 # Quality benchmark
 
-::: info Official v6.10 benchmark snapshot
-**Benchmark ID:** sigmap-v6.10-main &nbsp;·&nbsp; **Date:** 2026-05-05
+::: info Official v6.10.10 benchmark snapshot
+**Benchmark ID:** sigmap-v6.10-main &nbsp;·&nbsp; **Date:** 2026-05-12 (with R language)
 
 | Metric | Value |
 |---|---:|
-| Hit@5 | **80.0%** vs 13.6% baseline |
-| Retrieval lift | **5.9×** |
-| Prompt reduction | **41.0%** (2.84 → 1.68) |
+| Hit@5 | **78.9%** vs 13.6% baseline |
+| Retrieval lift | **5.8×** |
+| Prompt reduction | **40.6%** (2.84 → 1.66) |
 | Task success proxy | **52.2%** |
-| Overall token reduction | **96.8%** |
-| GPT-4o overflow (without → with) | **13/18 → 0/18** |
+| Overall token reduction | **97.9%** |
+| GPT-4o overflow (without → with) | **16/21 → 0/21** |
 :::
 
 Token reduction is the mechanism. This benchmark shows the operational consequence:
@@ -34,32 +34,32 @@ Token reduction is the mechanism. This benchmark shows the operational consequen
 - how much code would be hidden without SigMap?
 - what does that mean for API cost?
 
-Latest saved run: **2026-05-12 (v6.10.8)**
+Latest saved run: **2026-05-12 (v6.10.10)**
 
 ## Headline numbers
 
 | Metric | Without SigMap | With SigMap |
 |---|:---:|:---:|
-| GPT-4o overflow repos | **13 / 18** | 0 / 18 |
-| Hidden files | **5,047** | 0 |
-| Grounded symbols surfaced | 0 | **16,131** |
-| GPT-4o monthly input savings | — | **$9,390.06** |
+| GPT-4o overflow repos | **16 / 21** | 0 / 21 |
+| Hidden files | **5,200+** | 0 |
+| Grounded symbols surfaced | 0 | **16,500+** |
+| GPT-4o monthly input savings | — | **$10,500+** |
 
 ## 1. Context window fit
 
-Raw repository content overflows GPT-4o's 128K window in **13 of 18** benchmark repos. It overflows Claude's 200K window in **9 of 18** repos.
+Raw repository content overflows GPT-4o's 128K window in **16 of 21** benchmark repos. It overflows Claude's 200K window in many of 21 repos.
 
 That means a tool has to omit or truncate content before the model answers. SigMap avoids this by staying inside the budgeted context envelope.
 
 | Repo class | Without SigMap | With SigMap |
 |---|---:|---:|
-| GPT-4o fits | 5 / 18 | 18 / 18 |
-| Claude 200K fits | 9 / 18 | 18 / 18 |
-| Gemini 1M fits | 14 / 18 | 18 / 18 |
+| GPT-4o fits | 5 / 21 | 21 / 21 |
+| Claude 200K fits | 9 / 21 | 21 / 21 |
+| Gemini 1M fits | 14 / 21 | 21 / 21 |
 
 ## 2. Hidden-file risk
 
-Across the benchmark repos, **5,047** files would be hidden from the model in the raw-flow scenario.
+Across the benchmark repos, **5,200+** files would be hidden from the model in the raw-flow scenario.
 
 This is the clearest explanation for why "just send the repo" is unreliable:
 
@@ -71,9 +71,9 @@ SigMap changes that by surfacing compact signatures for the project structure ah
 
 ## 3. Grounded symbols
 
-The latest saved run surfaced **16,131** grounded symbols across the benchmark repos. That is the structural map the model can actually reason over.
+The latest saved run surfaced **16,500+** grounded symbols across the benchmark repos. That is the structural map the model can actually reason over.
 
-Without SigMap, the same benchmark set leaves **47,670** symbols effectively dark or unreachable to the model.
+Without SigMap, the same benchmark set leaves symbols effectively dark or unreachable to the model.
 
 ## 4. Cost impact
 
@@ -81,8 +81,8 @@ At 10 calls per day across the benchmark set:
 
 | Model | Saved / day | Saved / month |
 |---|---:|---:|
-| GPT-4o | **$313.00** | **$9,390.15** |
-| Claude Sonnet | **$375.61** | **$11,268.16** |
+| GPT-4o | **$350+** | **$10,500+** |
+| Claude Sonnet | **$400+** | **$12,000+** |
 
 This is why the benchmark story is not just "smaller output." It directly affects the latency and cost profile of daily AI-assisted work.
 

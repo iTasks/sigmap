@@ -87,7 +87,7 @@ export class UserService
 - Generated files (`*.pb.*`, `*.generated.*`)
 - Any credential, key, token, or secret pattern
 
-## All 29 languages
+## All 31 languages
 
 | Language | Extensions | Extracts |
 |----------|------------|----------|
