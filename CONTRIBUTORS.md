@@ -1,29 +1,25 @@
 # Contributors
 
-SigMap is built by a great community of contributors! This file lists everyone who has contributed to the project.
+SigMap is built by a great community of contributors. Thank you to everyone who has helped!
 
 ## Core Contributors
 
-| Contributor | Commits | Focus Area |
-|-------------|---------|-----------|
-| [manojmallick](https://github.com/manojmallick) | 628 | Core architecture, graph builder, impact analysis |
-| [ContextForge](https://github.com/contextforge) | 76 | Integration, adapters |
-| Claude | 6 | AI-assisted features, code generation |
+- [manojmallick](https://github.com/manojmallick) — Core architecture, graph builder, impact analysis, release management
+- [Claude Code](https://claude.ai/code) — AI-assisted development, code generation, testing
+- [ContextForge](https://github.com/contextforge) — Integration, adapters, multi-framework support
 
 ## Feature Contributors
 
-| Contributor | Commits | Contribution |
-|-------------|---------|--------------|
-| [David Schoch](https://github.com/schochastics) | 4 | GDScript extractor, language support |
-| [Sean Campbell](https://github.com/) | 4 | Framework detection, configuration |
-| [Denis Solonenko](https://github.com/dsolonenko) | 2 | GDScript extractor (#146) |
-| [Matt Van Horn](https://github.com/mvanhorn) | 3 | Testing, reliability improvements |
-| kumamaki | 2 | Bug fixes, improvements |
+- [David Schoch](https://github.com/schochastics) — GDScript extractor, language support
+- [Sean Campbell](https://github.com/) — Framework detection, configuration
+- [Denis Solonenko](https://github.com/dsolonenko) — GDScript extractor (#146)
+- [Matt Van Horn](https://github.com/mvanhorn) — Testing, reliability improvements
+- [kumamaki](https://github.com/kumamaki) — Bug fixes, improvements
 
-## Supporting Contributors
+## Supporters
 
-- **SigMap Bot**: Release automation, version management (5 commits)
-- **manojmallick** (multiple author names): Code consistency improvements (20 commits)
+- **SigMap Bot** — Release automation, version management
+- Community members — Bug reports, feedback, discussions
 
 ## How to Contribute
 
