@@ -4922,6 +4922,9 @@ __factories["./src/graph/builder"] = function(module, exports) {
     for (const c of candidates) { if (fileSet.has(c)) return c; }
     return null;
   }
+  function normalizePath(p) {
+    return path.normalize(p).toLowerCase();
+  }
   function extractFileDeps(filePath, content, fileSet) {
     const ext = path.extname(filePath).toLowerCase();
     const dir = path.dirname(filePath);
@@ -4941,7 +4944,13 @@ __factories["./src/graph/builder"] = function(module, exports) {
         const modPart = m[1].slice(dotCount).replace(/\./g,'/');
         let base = dir; for (let i=1;i<dotCount;i++) base=path.dirname(base);
         const candidate = modPart ? path.join(base,modPart+'.py') : null;
-        if (candidate && fileSet.has(candidate)) found.push(candidate);
+        if (candidate) { const normC = normalizePath(candidate); if (fileSet.has(normC)) found.push(normC); }
+      }
+      const reAbs = /^[ \t]*from\s+([\w.]+)\s+import/gm;
+      while ((m = reAbs.exec(content)) !== null) {
+        const modulePath = m[1].replace(/\./g,'/');
+        const candidates = [path.join(dir,modulePath+'.py'),path.join(dir,modulePath,'__init__.py'),path.resolve(dir,'..',modulePath+'.py'),path.resolve(dir,'..',modulePath,'__init__.py')];
+        for (const c of candidates) { const normC = normalizePath(c); if (fileSet.has(normC)) { found.push(normC); break; } }
       }
     }
     if (GO_EXTS.has(ext)) {
@@ -4952,14 +4961,14 @@ __factories["./src/graph/builder"] = function(module, exports) {
       while ((m = reInline.exec(content)) !== null) imports.push(m[1]);
       for (const imp of imports) {
         const suffix = imp.split('/').pop();
-        for (const f of fileSet) { if (f.endsWith(path.sep+suffix+'.go')||f.includes(path.sep+suffix+path.sep)) { found.push(f); break; } }
+        for (const f of fileSet) { const normF = normalizePath(f); if (normF.endsWith(path.sep+suffix+'.go')||normF.includes(path.sep+suffix+path.sep)) { found.push(normF); break; } }
       }
     }
     if (RS_EXTS.has(ext)) {
       const reMod = /^\s*(?:pub\s+)?mod\s+(\w+)\s*;/gm; let m;
       while ((m = reMod.exec(content)) !== null) {
-        const c1 = path.join(dir,m[1]+'.rs'); if (fileSet.has(c1)) found.push(c1);
-        const c2 = path.join(dir,m[1],'mod.rs'); if (fileSet.has(c2)) found.push(c2);
+        const c1 = path.join(dir,m[1]+'.rs'); const normC1 = normalizePath(c1); if (fileSet.has(normC1)) found.push(normC1);
+        const c2 = path.join(dir,m[1],'mod.rs'); const normC2 = normalizePath(c2); if (fileSet.has(normC2)) found.push(normC2);
       }
     }
     if (JVM_EXTS.has(ext)) {
@@ -4967,7 +4976,7 @@ __factories["./src/graph/builder"] = function(module, exports) {
       while ((m = re.exec(content)) !== null) {
         const asPath = m[1].replace(/\./g,path.sep);
         for (const jvmExt of ['.java','.kt','.kts','.scala','.sc']) {
-          for (const f of fileSet) { if (f.endsWith(asPath+jvmExt)) { found.push(f); break; } }
+          for (const f of fileSet) { const normF = normalizePath(f); if (normF.endsWith(normalizePath(asPath+jvmExt))) { found.push(normF); break; } }
         }
       }
     }
@@ -4976,21 +4985,25 @@ __factories["./src/graph/builder"] = function(module, exports) {
       while ((m = re.exec(content)) !== null) {
         const base = path.resolve(dir,m[1]);
         const candidate = base.endsWith('.rb') ? base : base+'.rb';
-        if (fileSet.has(candidate)) found.push(candidate);
+        const normC = normalizePath(candidate);
+        if (fileSet.has(normC)) found.push(normC);
       }
     }
     return [...new Set(found)];
   }
   function build(files, cwd) {
     const fileSet = new Set(files.map((f) => path.resolve(f)));
+    const fileSetNormalized = new Set([...fileSet].map(normalizePath));
+    const normToOriginal = new Map(); for (const f of fileSet) { normToOriginal.set(normalizePath(f),f); }
     const forward = new Map(); const reverse = new Map();
     for (const f of fileSet) { if (!forward.has(f)) forward.set(f,[]); if (!reverse.has(f)) reverse.set(f,[]); }
     for (const filePath of fileSet) {
       let content; try { content = fs.readFileSync(filePath,'utf8'); } catch(_) { continue; }
-      const deps = extractFileDeps(filePath, content, fileSet);
+      const deps = extractFileDeps(filePath, content, fileSetNormalized);
       if (deps.length > 0) {
-        forward.set(filePath, deps);
-        for (const dep of deps) { if (!reverse.has(dep)) reverse.set(dep,[]); reverse.get(dep).push(filePath); }
+        const origDeps = deps.map((dep) => normToOriginal.get(dep)||dep);
+        forward.set(filePath, origDeps);
+        for (const dep of origDeps) { if (!reverse.has(dep)) reverse.set(dep,[]); reverse.get(dep).push(filePath); }
       }
     }
     return { forward, reverse };
@@ -5020,7 +5033,7 @@ __factories["./src/graph/builder"] = function(module, exports) {
     }
     return build(files, cwd);
   }
-  module.exports = { build, buildFromCwd, extractFileDeps };
+  module.exports = { build, buildFromCwd, extractFileDeps, normalizePath };
 };
 
 // ── ./src/graph/impact ──
@@ -5032,6 +5045,7 @@ __factories["./src/graph/impact"] = function(module, exports) {
   const ROUTE_PATTERNS = [/router?\.[jt]sx?$/i,/routes?\.[jt]sx?$/i,/controller\.[jt]sx?$/i,/views?\.[jt]sx?$/i,/handlers?\.[jt]sx?$/i];
   function isTestFile(f) { return TEST_PATTERNS.some((re) => re.test(f.replace(/\\/g,'/'))); }
   function isRouteFile(f) { return ROUTE_PATTERNS.some((re) => re.test(f.replace(/\\/g,'/'))); }
+  function normalizePath(p) { return path.normalize(p).toLowerCase(); }
   function bfs(startFile, reverseGraph, maxDepth) {
     const direct=new Set(); const transitive=new Set(); const visited=new Set([startFile]);
     const firstLevel = reverseGraph.get(startFile)||[];
@@ -5050,7 +5064,7 @@ __factories["./src/graph/impact"] = function(module, exports) {
   }
   function getImpact(changedFile, graph, opts) {
     const {depth=0,cwd=process.cwd()} = opts||{};
-    const absChanged = path.resolve(cwd,changedFile);
+    const absChanged = normalizePath(path.resolve(cwd,changedFile));
     if (!graph||!graph.reverse) return {changed:changedFile,direct:[],transitive:[],tests:[],routes:[],totalImpact:0};
     const {direct,transitive} = bfs(absChanged,graph.reverse,depth);
     const allImpacted=[...direct,...transitive];

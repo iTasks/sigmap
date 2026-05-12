@@ -12,6 +12,12 @@
 const fs   = require('fs');
 const path = require('path');
 
+// Normalize paths for cross-platform consistency (Windows uses backslashes, Unix uses forward slashes)
+// Use lowercase to enable case-insensitive lookups on case-sensitive Windows filesystems
+function normalizePath(p) {
+  return path.normalize(p).toLowerCase();
+}
+
 // ---------------------------------------------------------------------------
 // Language-specific import extractors
 // ---------------------------------------------------------------------------
@@ -40,7 +46,8 @@ function resolveJsPath(dir, importStr, fileSet) {
     path.join(base, 'index.js'),
   ];
   for (const c of candidates) {
-    if (fileSet.has(c)) return c;
+    const normC = normalizePath(c);
+    if (fileSet.has(normC)) return normC;
   }
   return null;
 }
@@ -91,7 +98,10 @@ function extractFileDeps(filePath, content, fileSet) {
       const candidate = modPart
         ? path.join(base, modPart + '.py')
         : null;
-      if (candidate && fileSet.has(candidate)) found.push(candidate);
+      if (candidate) {
+        const normC = normalizePath(candidate);
+        if (fileSet.has(normC)) found.push(normC);
+      }
     }
 
     // Absolute imports: from package.module import ... (infer from project structure)
@@ -105,8 +115,9 @@ function extractFileDeps(filePath, content, fileSet) {
         path.resolve(dir, '..', modulePath, '__init__.py'),
       ];
       for (const c of candidates) {
-        if (fileSet.has(c)) {
-          found.push(c);
+        const normC = normalizePath(c);
+        if (fileSet.has(normC)) {
+          found.push(normC);
           break;
         }
       }
@@ -129,9 +140,10 @@ function extractFileDeps(filePath, content, fileSet) {
     for (const imp of imports) {
       const suffix = imp.split('/').pop();
       for (const f of fileSet) {
-        if (f.endsWith(path.sep + suffix + '.go') ||
-            f.includes(path.sep + suffix + path.sep)) {
-          found.push(f);
+        const normF = normalizePath(f);
+        if (normF.endsWith(path.sep + suffix + '.go') ||
+            normF.includes(path.sep + suffix + path.sep)) {
+          found.push(normF);
           break;
         }
       }
@@ -145,10 +157,12 @@ function extractFileDeps(filePath, content, fileSet) {
     let m;
     while ((m = reMod.exec(content)) !== null) {
       const candidate = path.join(dir, m[1] + '.rs');
-      if (fileSet.has(candidate)) found.push(candidate);
+      const normC = normalizePath(candidate);
+      if (fileSet.has(normC)) found.push(normC);
       // Also try mod/mod.rs
       const candidate2 = path.join(dir, m[1], 'mod.rs');
-      if (fileSet.has(candidate2)) found.push(candidate2);
+      const normC2 = normalizePath(candidate2);
+      if (fileSet.has(normC2)) found.push(normC2);
     }
   }
 
@@ -162,7 +176,8 @@ function extractFileDeps(filePath, content, fileSet) {
       const asPath = m[1].replace(/\./g, path.sep);
       for (const jvmExt of ['.java', '.kt', '.kts', '.scala', '.sc']) {
         for (const f of fileSet) {
-          if (f.endsWith(asPath + jvmExt)) { found.push(f); break; }
+          const normF = normalizePath(f);
+          if (normF.endsWith(normalizePath(asPath + jvmExt))) { found.push(normF); break; }
         }
       }
     }
@@ -175,7 +190,8 @@ function extractFileDeps(filePath, content, fileSet) {
     while ((m = re.exec(content)) !== null) {
       const base = path.resolve(dir, m[1]);
       const candidate  = base.endsWith('.rb') ? base : base + '.rb';
-      if (fileSet.has(candidate)) found.push(candidate);
+      const normC = normalizePath(candidate);
+      if (fileSet.has(normC)) found.push(normC);
     }
   }
 
@@ -195,13 +211,17 @@ function extractFileDeps(filePath, content, fileSet) {
  */
 function build(files, cwd) {
   const fileSet = new Set(files.map((f) => path.resolve(f)));
+  // Create a normalized version for cross-platform case-insensitive lookups
+  const fileSetNormalized = new Set([...fileSet].map(normalizePath));
   const forward = new Map();
   const reverse = new Map();
 
   // Initialise every known file in both maps (ensures isolated files appear)
+  // Store using normalized paths for Windows compatibility
   for (const f of fileSet) {
-    if (!forward.has(f)) forward.set(f, []);
-    if (!reverse.has(f)) reverse.set(f, []);
+    const normF = normalizePath(f);
+    if (!forward.has(normF)) forward.set(normF, []);
+    if (!reverse.has(normF)) reverse.set(normF, []);
   }
 
   for (const filePath of fileSet) {
@@ -212,12 +232,13 @@ function build(files, cwd) {
       continue;
     }
 
-    const deps = extractFileDeps(filePath, content, fileSet);
+    const normFilePath = normalizePath(filePath);
+    const deps = extractFileDeps(filePath, content, fileSetNormalized);
     if (deps.length > 0) {
-      forward.set(filePath, deps);
+      forward.set(normFilePath, deps);
       for (const dep of deps) {
         if (!reverse.has(dep)) reverse.set(dep, []);
-        reverse.get(dep).push(filePath);
+        reverse.get(dep).push(normFilePath);
       }
     }
   }
@@ -274,4 +295,4 @@ function buildFromCwd(cwd, opts) {
   return build(files, cwd);
 }
 
-module.exports = { build, buildFromCwd, extractFileDeps };
+module.exports = { build, buildFromCwd, extractFileDeps, normalizePath };

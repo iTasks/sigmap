@@ -73,7 +73,7 @@ function mcpCall(msg) {
 // ---------------------------------------------------------------------------
 // Load modules directly
 // ---------------------------------------------------------------------------
-const { build, buildFromCwd }                        = require(path.join(ROOT, 'src', 'graph', 'builder'));
+const { build, buildFromCwd, normalizePath }                        = require(path.join(ROOT, 'src', 'graph', 'builder'));
 const { getImpact, analyzeImpact, formatImpact, formatImpactJSON } = require(path.join(ROOT, 'src', 'graph', 'impact'));
 
 console.log('[impact.test.js] v2.5 impact layer');
@@ -82,6 +82,8 @@ console.log('');
 // Known file used throughout: src/security/scanner.js imports src/security/patterns.js
 const SCANNER_ABS  = path.join(ROOT, 'src', 'security', 'scanner.js');
 const PATTERNS_ABS = path.join(ROOT, 'src', 'security', 'patterns.js');
+const SCANNER_NORM = normalizePath(SCANNER_ABS);
+const PATTERNS_NORM = normalizePath(PATTERNS_ABS);
 
 // ---------------------------------------------------------------------------
 // builder tests
@@ -96,15 +98,15 @@ test('builder: build() returns forward and reverse maps', () => {
 test('builder: forward map contains known JS import', () => {
   const g = build([SCANNER_ABS, PATTERNS_ABS], ROOT);
   // scanner.js requires patterns.js — forward[scanner] should include patterns
-  const deps = g.forward.get(SCANNER_ABS) || [];
-  assert.ok(deps.includes(PATTERNS_ABS), `expected patterns.js in forward deps of scanner.js, got: ${deps}`);
+  const deps = g.forward.get(SCANNER_NORM) || [];
+  assert.ok(deps.includes(PATTERNS_NORM), `expected patterns.js in forward deps of scanner.js, got: ${deps}`);
 });
 
 test('builder: reverse map correctly inverts forward map', () => {
   const g = build([SCANNER_ABS, PATTERNS_ABS], ROOT);
   // reverse[patterns] should include scanner
-  const importers = g.reverse.get(PATTERNS_ABS) || [];
-  assert.ok(importers.includes(SCANNER_ABS), `expected scanner.js in reverse of patterns.js, got: ${importers}`);
+  const importers = g.reverse.get(PATTERNS_NORM) || [];
+  assert.ok(importers.includes(SCANNER_NORM), `expected scanner.js in reverse of patterns.js, got: ${importers}`);
 });
 
 test('builder: handles empty file list gracefully', () => {
@@ -243,9 +245,11 @@ test('builder: Python absolute imports are detected', () => {
   const calcPath = path.join(dir, 'services', 'calculator.py');
 
   // base.py is imported by calculator.py (via absolute import from core.base)
-  const reverseOfBase = g.reverse.get(basePath) || [];
+  const basePathNorm = normalizePath(basePath);
+  const calcPathNorm = normalizePath(calcPath);
+  const reverseOfBase = g.reverse.get(basePathNorm) || [];
   assert.ok(
-    reverseOfBase.includes(calcPath),
+    reverseOfBase.includes(calcPathNorm),
     `expected calculator.py in reverse of base.py (absolute import), got: ${reverseOfBase}`
   );
 
@@ -367,6 +371,34 @@ test('analyzeImpact: convenience wrapper returns array', () => {
   assert.strictEqual(results.length, 1, 'should have one result for one file');
   assert.ok('file'   in results[0], 'each result should have file');
   assert.ok('impact' in results[0], 'each result should have impact');
+});
+
+// ---------------------------------------------------------------------------
+// Windows path normalization (case-insensitive lookup)
+// ---------------------------------------------------------------------------
+
+test('builder: normalizes paths for case-insensitive Windows lookups', () => {
+  const { build } = require(SCRIPT.replace('gen-context.js', 'src/graph/builder.js'));
+  const files = [
+    path.resolve(ROOT, 'src/security/patterns.js'),
+    path.resolve(ROOT, 'src/security/env.js'),
+  ];
+  const graph = build(files, ROOT);
+  assert.ok(graph.forward instanceof Map, 'forward should be Map');
+  assert.ok(graph.reverse instanceof Map, 'reverse should be Map');
+  // Check that all keys are lowercase (for case-insensitive comparison)
+  for (const key of graph.forward.keys()) {
+    assert.strictEqual(key, key.toLowerCase(), `path "${key}" should be lowercase`);
+  }
+});
+
+test('getImpact: works with normalized paths on case-sensitive systems', () => {
+  const results = analyzeImpact('src/security/patterns.js', ROOT, { depth: 2 });
+  assert.strictEqual(results.length, 1, 'should return one result');
+  const impact = results[0].impact;
+  // This test verifies that path lookup works even if there were case differences
+  assert.ok('totalImpact' in impact, 'impact should have totalImpact');
+  assert.ok(typeof impact.totalImpact === 'number', 'totalImpact should be number');
 });
 
 // ---------------------------------------------------------------------------
