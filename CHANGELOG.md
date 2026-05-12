@@ -8,6 +8,10 @@ Format: [Semantic Versioning](https://semver.org/)
 
 ## [Unreleased]
 
+---
+
+## [6.10.10] — 2026-05-12
+
 ### Added
 
 - **First-class R support** — R was already in the language detector and had an extractor, but several gaps stopped it from being usable end-to-end:
@@ -17,11 +21,7 @@ Format: [Semantic Versioning](https://semver.org/)
   - New `src/discovery/r-manifest.js` module with zero-dep parsers for `DESCRIPTION` (Debian-control format, handles continuation lines and version constraints) and `NAMESPACE` (`export`, `exportPattern`, `exportMethods`, `S3method`, `importFrom`).
   - Added `extractRDeps` to `src/extractors/deps.js` for the dep-map section, recognising `library()`/`require()`/`requireNamespace("…")` and `pkg::fn`, skipping R base packages.
   - Extended the ranker's hub heuristic to recognise `R/utils.R`, `R/zzz.R`, `R/globals.R` and `*.r/*.R` files in the common hub-name set.
-  - Test fixture `test/fixtures/r-package/` (DESCRIPTION + NAMESPACE + `R/`) and 8 new tests in `test/r-language.test.js` cover manifest parsing, `source()` edge emission, namespace-aware resolution, and hub detection. Existing `test/fixtures/r.r` extended with R6/S7/richer roxygen2.
-
----
-
-## [6.10.10] — 2026-05-12
+  - Test fixture `test/fixtures/r-package/` (DESCRIPTION + NAMESPACE + `R/`) and 8 new tests in `test/r-language.test.js` cover manifest parsing, `source()` edge emission, namespace-aware resolution, and hub detection. Existing `test/fixtures/r.r` extended with R6/S7/richer roxygen2 (closes #190).
 
 ### Fixed
 
