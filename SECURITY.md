@@ -2,7 +2,7 @@
 
 ## Reporting Security Vulnerabilities
 
-If you discover a security vulnerability in SigMap, please do **not** open a public GitHub issue. Instead, email us at **zzphandyman@gmail.com** with:
+If you discover a security vulnerability in SigMap, please do **not** open a public GitHub issue. Instead, email us at **manoj.mallick079@gmail.com** with:
 
 - Description of the vulnerability
 - Steps to reproduce (if applicable)
@@ -45,6 +45,10 @@ We will acknowledge your report within 48 hours and work with you to fix the iss
 | v5.x    | Community        |
 | < v5.0  | Unsupported      |
 
-## Dependencies
+## Zero Dependencies
 
-SigMap has **zero runtime dependencies**. We regularly audit our development dependencies for vulnerabilities using GitHub's Dependabot.
+SigMap has **zero runtime dependencies**, which means:
+- No external code is bundled in production
+- Minimal attack surface for supply chain vulnerabilities
+- No dependency updates needed for runtime security
+- Faster, more reliable installations

@@ -34,7 +34,7 @@ Community members who violate this code of conduct may be subject to:
 
 ## Reporting
 
-If you witness or experience a violation of this code of conduct, please report it to **zzphandyman@gmail.com** with:
+If you witness or experience a violation of this code of conduct, please report it to **manoj.mallick079@gmail.com** with:
 
 - Description of the incident
 - Who was involved
