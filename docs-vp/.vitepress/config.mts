@@ -22,7 +22,7 @@ export default defineConfig({
     nav: [
       { text: 'Docs', link: '/guide/quick-start', activeMatch: '/guide/' },
       {
-        text: 'GitHub',
+        text: 'GitHub ⭐',
         link: 'https://github.com/manojmallick/sigmap',
         badge: {
           text: '⭐',
