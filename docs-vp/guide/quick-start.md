@@ -53,17 +53,39 @@ sigmap validate --query "auth login token"
 
 If coverage is low, fix that before trusting the answer.
 
-## 5. Judge the answer
+## 5. Get the AI response
 
-Save the model answer to a file, then score its groundedness:
+Copy the context and ask your AI assistant:
+
+```bash
+# Display the focused context (already created in step 3)
+cat .context/query-context.md
+# → Copy this into Claude, Copilot, ChatGPT, or your IDE chat
+# → Ask: "Explain the auth flow" (paste the context first)
+# → Copy the AI's answer
+```
+
+Save the AI's response to a file:
+
+```bash
+# Create response.txt with the AI's answer
+cat > response.txt << 'EOF'
+<Paste the AI's answer here>
+EOF
+```
+
+## 6. Judge the answer
+
+Score whether the AI's answer is grounded in your code:
 
 ```bash
 sigmap judge --response response.txt --context .context/query-context.md
+# Output: Score (0.0–1.0) and PASS/FAIL indication
 ```
 
 That tells you whether the answer looks supported by the supplied code context.
 
-## Optional automation
+## 7. Optional: Stay fresh with automation
 
 If you want SigMap to stay fresh in the background:
 
@@ -74,7 +96,7 @@ sigmap --watch
 
 `--setup` installs the git hook and MCP config. `--watch` is best during active coding.
 
-## Optional local learning
+## 8. Optional: Local learning
 
 If a file was especially helpful or misleading, reinforce that locally:
 

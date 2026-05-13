@@ -28,13 +28,36 @@ Support level      : HIGH
 Unsupported symbols: none
 ```
 
-## Best input pairing
+## Complete workflow: ask → get answer → judge
 
-Use `judge` right after `ask`:
+**Step 1: Generate focused context**
+```bash
+sigmap ask "explain the auth flow"
+# Creates: .context/query-context.md
+```
 
-1. `sigmap ask "explain auth flow"`
-2. Save the model answer to `response.txt`
-3. `sigmap judge --response response.txt --context .context/query-context.md`
+**Step 2: Get AI response**
+```bash
+# Copy .context/query-context.md into your AI chat
+cat .context/query-context.md
+# Paste the output into Claude, Copilot, ChatGPT, or your IDE
+# Ask your question: "Explain the auth flow"
+# Copy the AI's response
+```
+
+**Step 3: Save the response**
+```bash
+# Create response.txt with the AI's answer
+cat > response.txt << 'EOF'
+[Paste the complete AI response here]
+EOF
+```
+
+**Step 4: Judge groundedness**
+```bash
+sigmap judge --response response.txt --context .context/query-context.md
+# Output: Groundedness score and support level
+```
 
 ## Opt-in learning
 

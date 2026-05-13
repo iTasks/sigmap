@@ -110,11 +110,38 @@ features:
 
 ## 30-second start
 
+**Step 1: Generate context for your project**
 ```bash
 npx sigmap
+```
+
+**Step 2: Ask for relevant files (query-specific context)**
+```bash
 sigmap ask "explain the auth flow"
+# Outputs: ranked file list + .context/query-context.md (ready to paste)
+```
+
+**Step 3: Copy context to your AI assistant**
+- Open `.context/query-context.md` 
+- Paste the content into Claude, Copilot, ChatGPT, or your IDE's AI chat
+- Ask: "Explain the auth flow"
+
+**Step 4: Save the AI response**
+```bash
+# Copy the AI's answer into a file
+echo "Paste AI response here..." > response.txt
+```
+
+**Step 5: Validate coverage (optional)**
+```bash
 sigmap validate --query "auth login token"
+# Check if coverage is high enough to trust the response
+```
+
+**Step 6: Judge groundedness**
+```bash
 sigmap judge --response response.txt --context .context/query-context.md
+# Score: shows if the answer is grounded in your code
 ```
 
 That flow gives you: a compact signature map · a focused query context · a coverage sanity check · a groundedness score for the answer.
