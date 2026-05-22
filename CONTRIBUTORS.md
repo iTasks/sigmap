@@ -21,6 +21,16 @@ SigMap is built by a great community of contributors. Thank you to everyone who 
 - **SigMap Bot** — Release automation, version management
 - Community members — Bug reports, feedback, discussions
 
+## Contribution Attribution
+
+When you contribute to SigMap, your GitHub account will appear in the [contributors graph](https://github.com/manojmallick/sigmap/graphs/contributors) if:
+- Your commit author email is linked to your GitHub account profile
+- You make commits using that email address
+
+To ensure proper attribution:
+1. Link your email to your GitHub account: https://github.com/settings/emails
+2. Configure git locally: `git config user.email your-github-email@example.com`
+
 ## How to Contribute
 
 We welcome contributions! See [Contributing](./docs/CONTRIBUTING.md) for guidelines.
