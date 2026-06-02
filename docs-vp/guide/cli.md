@@ -123,6 +123,8 @@ With `--json` the output is a machine-readable object with `intent`, `coverage`,
 
 When coverage drops below 70%, a warning is emitted on stderr pointing to `sigmap validate`.
 
+**Line anchors (v6.11.0):** top-level TypeScript and Python signatures carry a `:start-end` source range, e.g. `export class UserRepository  :18-36`. This is the first step of *Surgical Context* — an agent can open the exact lines instead of the whole file. Anchors appear automatically in `ask` output, the generated `CLAUDE.md`, and every adapter; no flag is required.
+
 ### ask --followup
 
 Carry context across follow-up queries in a session. When you use `--followup`, SigMap loads the previous session's context (saved automatically after each `ask` run) and applies a +0.2 boost to files that were in the top-5 from the previous query. If the intent differs from the previous session (topic switch), the boost is reduced to +0.1 to reflect the new direction.

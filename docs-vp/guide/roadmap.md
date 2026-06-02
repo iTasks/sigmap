@@ -1,6 +1,6 @@
 ---
 title: Roadmap
-description: SigMap version history and roadmap. From v0.0 to v6.10.8, with the latest releases implementing Python import detection, fixing get_impact for Python monorepos, and establishing develop-first branching strategy.
+description: SigMap version history and roadmap. From v0.0 to v6.11.0, with the latest release adding line anchors (Surgical Context Phase 1) to TypeScript and Python signatures so agents read exact lines instead of whole files.
 head:
   - - meta
     - property: og:title
@@ -20,9 +20,9 @@ head:
 ---
 # Roadmap
 
-Fifty-four versions shipped. MIT open source from day one.
+Fifty-five versions shipped. MIT open source from day one.
 
-**Stats:** 96.8% overall token reduction · 722 tests passing · 29 languages · 17-language source resolver · 0 npm deps
+**Stats:** 96.5% overall token reduction · 722 tests passing · 29 languages · 17-language source resolver · 0 npm deps
 
 ## Token reduction by version
 
@@ -767,9 +767,19 @@ Introduced benchmark transparency and answer usefulness evaluation. All 18 bench
 
 ---
 
-## Current milestone — v6.11+ (Extended language/framework coverage)
+### v6.11.0 — Line anchors (Surgical Context Phase 1) ✓ (tagged v6.11.0 — 2026-06-03)
 
-v6.0–v6.10.8 shipped graph-boosted retrieval with dependency-aware scoring, incremental signature cache, weights sharing, native tool instructions across all 7 adapters, MCP auto-wire for 10 AI tools, native tool registration, docs trust sync, intelligent source root detection, intent-aware retrieval with signal transparency, cross-session context memory with impact planning, JVM project structure auto-detection, enhanced monorepo JVM support, 2-hop graph boost with hub suppression, session-aware context carry-forward with safe change planning, segmented benchmarks with answer usefulness evaluation, monorepo workspace-scoped retrieval, R language support with S4 patterns, Python AST extraction for complex signatures, open-source agent/local LLM integration guides, and complete Python import detection in both import-graph and builder modules for accurate blast radius on Python monorepos. Next: extended language/framework coverage (S3 methods in R, Phase 2), cross-package import walk with decay, and performance optimizations for very large monorepos (>50K files).
+Top-level TypeScript and Python signatures now carry a `:start-end` line anchor (e.g. `export class UserRepository  :18-36`), so an AI agent can read the exact lines instead of re-opening the whole file — the first step of **Surgical Context**, the next phase of token reduction. Anchors are emitted as a string suffix, so `ask`, `CLAUDE.md`, and every adapter render them with no consumer changes. A latent block-comment/docstring strip that destroyed newlines and corrupted line numbers was fixed, so the Python AST and regex fallback paths now produce identical anchors.
+
+**Tags:** `line anchors` · `surgical context` · `token reduction` · `typescript` · `python` · `issue #212`
+
+**Benchmark:** 80.0% hit@5 · 96.5% token reduction · 53.3% task success (re-run on v6.11.0 — anchors are index suffixes, metrics unchanged)
+
+---
+
+## Current milestone — v6.12+ (Surgical Context Phase 2)
+
+v6.0–v6.11.0 shipped graph-boosted retrieval with dependency-aware scoring, incremental signature cache, weights sharing, native tool instructions across all 7 adapters, MCP auto-wire for 10 AI tools, native tool registration, docs trust sync, intelligent source root detection, intent-aware retrieval with signal transparency, cross-session context memory with impact planning, JVM project structure auto-detection, enhanced monorepo JVM support, 2-hop graph boost with hub suppression, session-aware context carry-forward with safe change planning, segmented benchmarks with answer usefulness evaluation, monorepo workspace-scoped retrieval, R language support with S4 patterns, Python AST extraction for complex signatures, open-source agent/local LLM integration guides, complete Python import detection in both import-graph and builder modules for accurate blast radius on Python monorepos, and line anchors on signatures (Surgical Context Phase 1). Next: Surgical Context Phase 2 — demand-driven `--mode index` plus a `get_lines` MCP tool and delta context for further token reduction — extended language/framework coverage (line anchors for the remaining extractors, S3 methods in R), and performance optimizations for very large monorepos (>50K files).
 
 ---
 
