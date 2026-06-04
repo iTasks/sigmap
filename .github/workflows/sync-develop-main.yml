@@ -17,7 +17,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use a PAT so the push to `develop` is authenticated as a ruleset
+          # bypass actor. The default GITHUB_TOKEN (github-actions[bot]) is NOT
+          # in the develop ruleset bypass list, so its direct push is rejected
+          # ("Changes must be made through a pull request"). SYNC_PAT must belong
+          # to an account/role listed under Settings → Rules → develop → Bypass.
+          # Falls back to GITHUB_TOKEN if the secret is unset (will still be
+          # blocked by the ruleset, but the workflow stays valid).
+          token: ${{ secrets.SYNC_PAT || secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Configure git
         run: |
