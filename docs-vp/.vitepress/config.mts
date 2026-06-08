@@ -46,6 +46,7 @@ export default defineConfig({
           { text: 'validate', link: '/guide/validate' },
           { text: 'judge', link: '/guide/judge' },
           { text: 'Learning & weights', link: '/guide/learning' },
+          { text: 'Memory & notes', link: '/guide/memory' },
           { text: 'compare & share', link: '/guide/compare' },
         ],
       },
