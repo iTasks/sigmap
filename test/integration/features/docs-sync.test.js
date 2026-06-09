@@ -80,9 +80,9 @@ test('quality-benchmark: latest saved run is v5.7.0 or later', () => {
 
 // ── Benchmark metric accuracy ─────────────────────────────────────────────────
 
-test('generalization: uses 81.1% hit@5 (current v6.11.1 benchmark)', () => {
+test('generalization: uses 75.6% hit@5 (current v6.11.1 benchmark)', () => {
   const src = readGuide('generalization.md');
-  assert.ok(src.includes('81.1%'), 'missing 81.1% hit@5 in generalization.md');
+  assert.ok(src.includes('75.6%'), 'missing 75.6% hit@5 in generalization.md');
   assert.ok(!src.includes('80.0% hit@5'), 'found stale 80.0% in generalization.md');
   assert.ok(!src.includes('78.9%'), 'found stale 78.9% in generalization.md');
 });
@@ -120,10 +120,10 @@ test('docs/index.html: structured-data description uses 29 languages', () => {
 
 // ── MCP tool count ────────────────────────────────────────────────────────────
 
-test('mcp.md: description mentions 10 tools (not 9)', () => {
+test('mcp.md: description mentions 11 tools (not 10)', () => {
   const src = readGuide('mcp.md');
   assert.ok(!src.includes('with 9 tools'), 'found "9 tools" in mcp.md description');
-  assert.ok(src.includes('10 tools'), 'missing "10 tools" in mcp.md');
+  assert.ok(src.includes('11 tools'), 'missing "11 tools" in mcp.md');
 });
 
 // ── Troubleshooting v5.5 coverage entry ───────────────────────────────────────

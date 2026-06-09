@@ -8,17 +8,17 @@
  *
  * Supported methods:
  *   initialize        → serverInfo + capabilities
- *   tools/list        → 10 tool definitions
+ *   tools/list        → 11 tool definitions
  *   tools/call        → dispatch to handler, return result
  */
 
 const readline = require('readline');
 const { TOOLS } = require('./tools');
-const { readContext, searchSignatures, getMap, createCheckpoint, getRouting, explainFile, listModules, queryContext, getImpact, getLines } = require('./handlers');
+const { readContext, searchSignatures, getMap, createCheckpoint, getRouting, explainFile, listModules, queryContext, getImpact, getLines, readMemory } = require('./handlers');
 
 const SERVER_INFO = {
   name: 'sigmap',
-  version: '6.14.0',
+  version: '6.15.0',
   description: 'SigMap MCP server — code signatures on demand',
 };
 
@@ -76,6 +76,7 @@ function dispatch(msg, cwd) {
       else if (name === 'query_context') text = queryContext(args, cwd);
       else if (name === 'get_impact') text = getImpact(args, cwd);
       else if (name === 'get_lines') text = getLines(args, cwd);
+      else if (name === 'read_memory') text = readMemory(args, cwd);
       else {
         respondError(id, -32601, `Unknown tool: ${name}`);
         return;
