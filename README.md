@@ -100,7 +100,7 @@ Repos tested   : 21 (JavaScript, Python, Go, Rust, Java, R, C++, C#, Dart, Swift
 Measured on 90 coding tasks across 18 real public repos. No LLM API — fully reproducible.
 
 **Resources:**
-- [Full methodology →](https://manojmallick.github.io/sigmap/guide/benchmark.html)
+- [Full methodology →](https://sigmap.io/guide/benchmark.html)
 - [Benchmark suite (GitHub)](https://github.com/manojmallick/sigmap-benchmark-suite) — scripts, tasks, and raw data
 - [Benchmark data (Zenodo)](https://zenodo.org/records/19898842) — archived results for reproducibility
 
@@ -172,8 +172,8 @@ sigmap --adapter claude    # works with Claude Code
 **Open-source agents & local LLMs:**
 
 Use SigMap with open-source tools and fully self-hosted setups:
-- **[Open-source agents guide →](https://manojmallick.github.io/sigmap/guide/agents)** — OpenCode, Aider, OpenHands, Cline
-- **[Local LLMs guide →](https://manojmallick.github.io/sigmap/guide/local-llms)** — Ollama, llama.cpp, vLLM (no API keys, full privacy)
+- **[Open-source agents guide →](https://sigmap.io/guide/agents)** — OpenCode, Aider, OpenHands, Cline
+- **[Local LLMs guide →](https://sigmap.io/guide/local-llms)** — Ollama, llama.cpp, vLLM (no API keys, full privacy)
 
 **IDE extensions:**
 
@@ -219,21 +219,21 @@ sigmap --health
 | 👶 **New** | [Quick start guide](docs/readmes/GETTING_STARTED.md) — setup in 60 seconds |
 | ⚡ **Daily** | `sigmap ask` / `sigmap validate` / `sigmap judge` |
 | 🧠 **Advanced** | [Context strategies](docs/readmes/CONTEXT_STRATEGIES.md) · [MCP setup](docs/readmes/MCP_SETUP.md) |
-| 🏢 **Teams** | [Config reference](https://manojmallick.github.io/sigmap/guide/config.html) · [CI setup](docs/readmes/ENTERPRISE_SETUP.md) |
+| 🏢 **Teams** | [Config reference](https://sigmap.io/guide/config.html) · [CI setup](docs/readmes/ENTERPRISE_SETUP.md) |
 
 ---
 
 ## Docs
 
-**[manojmallick.github.io/sigmap](https://manojmallick.github.io/sigmap)**
+**[sigmap.io](https://sigmap.io)**
 
 | Section | Link |
 |---|---|
-| CLI reference (32 commands) | [cli.html](https://manojmallick.github.io/sigmap/guide/cli.html) |
-| Benchmark methodology | [benchmark.html](https://manojmallick.github.io/sigmap/guide/benchmark.html) |
-| Config reference | [config.html](https://manojmallick.github.io/sigmap/guide/config.html) |
-| Roadmap | [roadmap.html](https://manojmallick.github.io/sigmap/guide/roadmap.html) |
-| 31 languages | [generalization.html](https://manojmallick.github.io/sigmap/guide/generalization.html) |
+| CLI reference (32 commands) | [cli.html](https://sigmap.io/guide/cli.html) |
+| Benchmark methodology | [benchmark.html](https://sigmap.io/guide/benchmark.html) |
+| Config reference | [config.html](https://sigmap.io/guide/config.html) |
+| Roadmap | [roadmap.html](https://sigmap.io/guide/roadmap.html) |
+| 31 languages | [generalization.html](https://sigmap.io/guide/generalization.html) |
 
 ---
 
@@ -284,7 +284,7 @@ TypeScript · JavaScript · Python · Java · Kotlin · Go · Rust · C# · C/C+
 
 All implemented with zero external dependencies.
 
-[Full language table →](https://manojmallick.github.io/sigmap/guide/generalization.html)
+[Full language table →](https://sigmap.io/guide/generalization.html)
 
 ---
 
@@ -296,7 +296,7 @@ MIT © 2026 [Manoj Mallick](https://github.com/manojmallick) · Made in Amsterda
 
 <div align="center">
 
-**[Docs](https://manojmallick.github.io/sigmap) · [Changelog](CHANGELOG.md) · [Roadmap](https://manojmallick.github.io/sigmap/roadmap.html) · [npm](https://www.npmjs.com/package/sigmap)**
+**[Docs](https://sigmap.io) · [Changelog](CHANGELOG.md) · [Roadmap](https://sigmap.io/roadmap.html) · [npm](https://www.npmjs.com/package/sigmap)**
 
 ⭐ [Star on GitHub](https://github.com/manojmallick/sigmap) if SigMap saves you tokens.
 
